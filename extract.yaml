@@ -1,0 +1,22 @@
+---
+- name: Extract floor/device/user from dict list
+  hosts: localhost
+  gather_facts: no
+  vars:
+    input_file: "input.yaml"
+    output_file: "output_{{ now().strftime('%Y%m%d%H%M') }}.json"
+  tasks:
+    - name: Load YAML input dictionary
+      ansible.builtin.include_vars:
+        file: "{{ input_file }}"
+        name: load_data
+    - name: Extract entities using filter plugin
+      ansible.builtin.set_fact:
+        extracted: "{{ load_data.input_data | extract_entities }}"
+    - name: Save JSON output
+      ansible.builtin.copy:
+        dest: "{{ output_file }}"
+        content: "{{ extracted | to_nice_json }}"
+    - name: Show output
+      ansible.builtin.debug:
+        var: extracted
