@@ -1,11 +1,11 @@
 input_data:
-  - { VLAN: 201, DESCRIPTION: "twenty-ninth floor voice users" }
-  - { VLAN: 202, DESCRIPTION: "floor8 wireless users" }
-  - { VLAN: 203, DESCRIPTION: "users on floor 26 voip" }
-  - { VLAN: 204, DESCRIPTION: "fifthfloor wifi users" }
-  - { VLAN: 205, DESCRIPTION: "floor 13 wi-fi users" }
-  - { VLAN: 206, DESCRIPTION: "users on thirty-second floor wireless" }
-  - { VLAN: 207, DESCRIPTION: "19th floor voice users" }
-  - { VLAN: 208, DESCRIPTION: "floor twenty six voip users" }
-  - { VLAN: 209, DESCRIPTION: "users on floor 10 wireless" }
-  - { VLAN: 210, DESCRIPTION: "thirty third floor wifi users" }
+  - { vlan: "201", description: "twenty-ninth_floor_voice_users" }
+  - { vlan: "202", description: "floor8_wireless_users" }
+  - { vlan: "203", description: "users on floor 26 voip" }
+  - { vlan: "204", description: "fifthfloor wifi users" }
+  - { vlan: 205, description: "floor 13 users" }
+  - { vlan: 206, description: "users on thirty-second floor wireless" }
+  - { vlan: 207, description: "19th_floor_voice_users" }
+  - { vlan: 208, description: "floor twenty six voip users" }
+  - { vlan: 209, description: "users on floor 10 wireless voip" }
+  - { vlan: 210, description: "thirty third floor wifi users" }

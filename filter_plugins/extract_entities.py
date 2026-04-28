@@ -118,14 +118,19 @@ def extract_users(text):
     return "users" in text.lower()
 def extract_entities_item(item):
     if isinstance(item, dict):
-        desc = item.get("DESCRIPTION", "")
-        old_vlan = item.get("VLAN", None)
-        base = {k: v for k, v in item.items() if k != "VLAN"}
+        desc = item.get("description", "")
+        old_vlan = item.get("vlan", None)
+        if old_vlan is not None:
+            try:
+                old_vlan = int(old_vlan)
+            except (ValueError, TypeError):
+                old_vlan = None
+        base = {k: v for k, v in item.items() if k != "vlan"}
     else:
         desc = str(item)
         old_vlan = None
         base = {}
-    cleaned = desc.strip()
+    cleaned = desc.strip().replace("_", " ")
     extracted = {
         "original-text": cleaned,
         "floor-number": extract_floor(cleaned),
