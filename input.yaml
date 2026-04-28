@@ -8,4 +8,4 @@ input_data:
   - { vlan: 207, description: "19th_floor_voice_users" }
   - { vlan: 208, description: "floor twenty six voip users" }
   - { vlan: 209, description: "users on floor 10 wireless voip" }
-  - { vlan: 210, description: "thirty third floor wifi users" }
+  - { vlan: 210, description: "THIRD_FL_WIRELESS_USERS" }

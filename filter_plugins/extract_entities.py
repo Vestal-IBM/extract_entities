@@ -31,6 +31,7 @@ TENS = {
     "twenty": 20, "thirty": 30
 }
 STOP_WORDS = r"(?:wireless|wifi|wi-fi|voice|voip|users)"
+FLOOR_WORD = r"(?:floor|fl)"
 def parse_cardinal(text):
     t = text.strip().lower().replace("-", " ")
     for tens_word, tens_val in TENS.items():
@@ -46,56 +47,56 @@ def parse_cardinal(text):
     return None
 def extract_floor(text):
     t = text.lower()
-    # 1) numeric ordinal with optional space before/after "floor"
-    m = re.search(r"\b(\d+)(st|nd|rd|th)\s*floor\b", t)
+    # 1) numeric ordinal with optional space before/after "floor/fl"
+    m = re.search(rf"\b(\d+)(st|nd|rd|th)\s*{FLOOR_WORD}\b", t)
     if m:
         return int(m.group(1))
-    m = re.search(r"\bfloor\s*(\d+)(st|nd|rd|th)?\b", t)
+    m = re.search(rf"\b{FLOOR_WORD}\s*(\d+)(st|nd|rd|th)?\b", t)
     if m:
         return int(m.group(1))
-    # 2) plain "floor N" with optional space
-    m = re.search(r"\bfloor\s*([0-9]+)\b", t)
+    # 2) plain "floor/fl N" with optional space
+    m = re.search(rf"\b{FLOOR_WORD}\s*([0-9]+)\b", t)
     if m:
         return int(m.group(1))
-    # 3) spelled-out ordinal with optional space before/after "floor"
+    # 3) spelled-out ordinal with optional space before/after "floor/fl"
     for word in sorted(ORDINAL_MAP, key=len, reverse=True):
-        if re.search(rf"\bfloor\s*{re.escape(word)}\b", t):
+        if re.search(rf"\b{FLOOR_WORD}\s*{re.escape(word)}\b", t):
             return ORDINAL_MAP[word]
-        if re.search(rf"\b{re.escape(word)}\s*floor\b", t):
+        if re.search(rf"\b{re.escape(word)}\s*{FLOOR_WORD}\b", t):
             return ORDINAL_MAP[word]
-        if re.search(rf"\bfloor{re.escape(word)}(?:\W|$)", t):
+        if re.search(rf"\b{FLOOR_WORD}{re.escape(word)}(?:\W|$)", t):
             return ORDINAL_MAP[word]
-        if re.search(rf"\b{re.escape(word)}floor\b", t):
+        if re.search(rf"\b{re.escape(word)}{FLOOR_WORD}\b", t):
             return ORDINAL_MAP[word]
-    # 4) joined cardinal after "floor" e.g. "floortwelve"
+    # 4) joined cardinal after "floor/fl" e.g. "floortwelve" or "fltwelve"
     for word in sorted(ONES, key=len, reverse=True):
-        if re.search(rf"\bfloor{re.escape(word)}(?:\W|$)", t):
+        if re.search(rf"\b{FLOOR_WORD}{re.escape(word)}(?:\W|$)", t):
             return ONES[word]
     for tens_word, tens_val in sorted(TENS.items(), key=lambda x: len(x[0]), reverse=True):
         for ones_word, ones_val in sorted(ONES.items(), key=lambda x: len(x[0]), reverse=True):
-            if re.search(rf"\bfloor{re.escape(tens_word)}{re.escape(ones_word)}(?:\W|$)", t):
+            if re.search(rf"\b{FLOOR_WORD}{re.escape(tens_word)}{re.escape(ones_word)}(?:\W|$)", t):
                 return tens_val + ones_val
-        if re.search(rf"\bfloor{re.escape(tens_word)}(?:\W|$)", t):
+        if re.search(rf"\b{FLOOR_WORD}{re.escape(tens_word)}(?:\W|$)", t):
             return tens_val
-    # 5) joined cardinal before "floor" e.g. "twelvefloor"
+    # 5) joined cardinal before "floor/fl" e.g. "twelvefloor" or "twelvefl"
     for word in sorted(ONES, key=len, reverse=True):
-        if re.search(rf"\b{re.escape(word)}floor\b", t):
+        if re.search(rf"\b{re.escape(word)}{FLOOR_WORD}\b", t):
             return ONES[word]
     for tens_word, tens_val in sorted(TENS.items(), key=lambda x: len(x[0]), reverse=True):
         for ones_word, ones_val in sorted(ONES.items(), key=lambda x: len(x[0]), reverse=True):
-            if re.search(rf"\b{re.escape(tens_word)}{re.escape(ones_word)}floor\b", t):
+            if re.search(rf"\b{re.escape(tens_word)}{re.escape(ones_word)}{FLOOR_WORD}\b", t):
                 return tens_val + ones_val
-        if re.search(rf"\b{re.escape(tens_word)}floor\b", t):
+        if re.search(rf"\b{re.escape(tens_word)}{FLOOR_WORD}\b", t):
             return tens_val
-    # 6) cardinal written number after "floor"
-    m = re.search(rf"\bfloor\s+([\w\s-]+?)\s+{STOP_WORDS}", t)
+    # 6) cardinal written number after "floor/fl"
+    m = re.search(rf"\b{FLOOR_WORD}\s+([\w\s-]+?)\s+{STOP_WORDS}", t)
     if m:
         candidate = m.group(1).strip()
         val = parse_cardinal(candidate)
         if val:
             return val
-    # 7) cardinal written number before "floor"
-    m = re.search(r"([\w\s-]+?)\s+floor\b", t)
+    # 7) cardinal written number before "floor/fl"
+    m = re.search(rf"([\w\s-]+?)\s+{FLOOR_WORD}\b", t)
     if m:
         candidate = m.group(1).strip()
         val = parse_cardinal(candidate)
