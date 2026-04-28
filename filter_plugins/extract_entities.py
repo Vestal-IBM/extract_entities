@@ -123,7 +123,7 @@ def extract_entities_item(item):
         old_vlan = item.get("vlan", None)
         if old_vlan is not None:
             try:
-                old_vlan = int(old_vlan)
+                old_vlan = str(int(old_vlan))
             except (ValueError, TypeError):
                 old_vlan = None
         base = {k: v for k, v in item.items() if k != "vlan"}
@@ -132,10 +132,11 @@ def extract_entities_item(item):
         old_vlan = None
         base = {}
     cleaned = desc.strip().replace("_", " ").lower()
+    floor = extract_floor(cleaned)
     extracted = {
-        "original-text": cleaned,
-        "floor-number": extract_floor(cleaned),
-        "device-type": extract_device(cleaned),
+        "original_text": cleaned,
+        "floor_number": str(floor) if floor is not None else None,
+        "device_type": extract_device(cleaned),
         "users": extract_users(cleaned),
     }
     if old_vlan is not None:
