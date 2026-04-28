@@ -130,7 +130,7 @@ def extract_entities_item(item):
         desc = str(item)
         old_vlan = None
         base = {}
-    cleaned = desc.strip().replace("_", " ")
+    cleaned = desc.strip().replace("_", " ").lower()
     extracted = {
         "original-text": cleaned,
         "floor-number": extract_floor(cleaned),
